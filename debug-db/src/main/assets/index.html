@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='shortcut icon' href='favicon.ico' type='image/x-icon'>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Android Database Manager</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script src="altEditor/dataTables.altEditor.free.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.1.2/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.1.2/css/buttons.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.dataTables.min.css"/>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h4>Databases:</h4>
+            <strong>DB</strong>
+        </div>
+
+        <ul class="list-unstyled components">
+
+                <div id="db-list" data-toggle='collapse' data-target='#table-list'></div>
+
+                <div class='sidebar-header' margin-top="20px">
+                    <h4>Tables:</h4>
+                    <strong >Tables</strong>
+                </div>
+
+                <div id="table-list" class="collapse"></div>
+
+        </ul>
+
+
+        <ul class="list-unstyled CTAs">
+            <li><a href="https://github.com/AbsolutelySaurabh" class="download">Download Module</a></li>
+        </ul>
+    </nav>
+
+    <!-- Page Content Holder -->
+    <div id="content">
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                        <i class="glyphicon glyphicon glyphicon-th"></i>
+                        <span>Android Database Manager</span>
+                    </button>
+                </div>
+
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li><a href="https://github.com/AbsolutelySaurabh" target="_blank">Github</a></li>
+                        <li><a href="https://github.com/AbsolutelySaurabh" target="_blank">Linkedin</a></li>
+                        <li><a href="https://github.com/AbsolutelySaurabh" target="_blank">Google Play</a></li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects<b
+                                    class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="https://github.com/AbsolutelySaurabh/ShowCube"
+                                       target="_blank">ShowCube</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/AbsolutelySaurabh/NewsHour"
+                                       target="_blank">NewsHour</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/AbsolutelySaurabh/reFood"
+                                       target="_blank">reFood</a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class= "table-responsive" id="parent-data-div" class="col-sm-8">
+            <div class="panel panel-info">
+                <div class="panel-heading">Table Data:</div>
+            </div>
+        </div>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit occaecat cupidatat non proident, sunt in culpa qui offial  culpa qui officia deserunt mollit anim id est laborum offial  culpa qui offici.</p>
+
+    <!--<div id="snackbar">Updated Successfully!</div>-->
+
+    </div>
+
+    </div>
+        <script type="text/javascript" src="app.js"></script>
+
+    </body>
+</html>
