@@ -1,6 +1,5 @@
 package dexter.appsmoniac.debugdb.server;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
@@ -26,6 +25,8 @@ public class ClientServer implements Runnable {
     }
 
     public void start() {
+        //being called from DebugDB initialize(which is called from DebugDBinitprovider which is a content provider, being
+        //registered in manifest with <provider> tag
         mIsRunning = true;
         new Thread(this).start();
     }
@@ -45,21 +46,28 @@ public class ClientServer implements Runnable {
     @Override
     public void run() {
         try {
+            //The server instantiates a ServerSocket object, denoting which port number communication is to occur on.
             mServerSocket = new ServerSocket(mPort);
             while (mIsRunning) {
+
+                //This will ensure that server is accepting requests and demanding requests
+                //ServerSocket is at server side
                 Socket socket = mServerSocket.accept();
                 mRequestHandler.handle(socket);
                 socket.close();
             }
         } catch (SocketException e) {
+
+            //This may also occur, if the port number is booked for some other process
             Log.e(TAG, "Server has stopped");
         } catch (IOException e) {
             Log.e(TAG, "Server error.", e);
-        } catch (Exception ignore) {
-            Log.e(TAG, "Exception.", ignore);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception.", e);
         }
     }
 
+    //called from DebugDB class, and brings HashMap of databaseFiles from there
     public void setCustomDatabaseFiles(HashMap<String, Pair<File, String>> customDatabaseFiles) {
         mRequestHandler.setCustomDatabaseFiles(customDatabaseFiles);
     }

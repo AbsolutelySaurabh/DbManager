@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.setCustomDatabaseFiles(getApplicationContext());
     }
 
+    //show toast on click
     public void showDebugDbAddress(View view) {
         Utils.showDebugDBAddressLogToast(getApplicationContext());
     }

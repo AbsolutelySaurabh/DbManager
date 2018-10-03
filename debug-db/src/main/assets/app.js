@@ -3,7 +3,6 @@ $(document).ready(function () {
 
     getDatabaseList();
 
-
     $('#sidebarCollapse').on('click', function () {
          $('#sidebar').toggleClass('active');
      });
@@ -13,7 +12,6 @@ $(document).ready(function () {
 
 
  function getDatabaseList() {
-
 
        $.ajax({url: "getDbList", success: function(result){
 

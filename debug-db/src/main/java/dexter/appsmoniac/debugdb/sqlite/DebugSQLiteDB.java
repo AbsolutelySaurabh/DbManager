@@ -31,6 +31,13 @@ public class DebugSQLiteDB implements SQLiteDB {
 
     @Override
     public Cursor rawQuery(String sql, String[] selectionArgs) {
+
+//        @Difference between rawQuery and execSql:
+//        if you want to execute something in database without concerning its output (e.g create/alter tables), then use execSQL,
+//        but if you are expecting some results in return against your query (e.g. select records) then use rawQuery
+
+        //selectionArgs:
+        //example : rawQuery("SELECT id, name FROM people WHERE name = ? AND id = ?", new String[] {"David", "2"});
         return database.rawQuery(sql, selectionArgs);
     }
 

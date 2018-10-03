@@ -8,11 +8,10 @@ public class TableDataResponse {
     public List<Object> rows;
     public String errorMessage;
     public boolean isEditable;
-    public boolean isSelectQuery;
 
+    //this static nested class cannot access non-static outer classes.
     public static class TableInfo {
         public String title;
-        public boolean isPrimary;
     }
 
     public static class ColumnData {

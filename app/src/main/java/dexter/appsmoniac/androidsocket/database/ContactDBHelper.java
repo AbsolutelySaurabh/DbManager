@@ -86,7 +86,7 @@ public class ContactDBHelper extends SQLiteOpenHelper {
                 new String[]{Integer.toString(id)});
     }
 
-    public ArrayList<String> getAllCotacts() {
+    public ArrayList<String> getAllContacts() {
         ArrayList<String> arrayList = new ArrayList<>();
 
         //hp = new HashMap();

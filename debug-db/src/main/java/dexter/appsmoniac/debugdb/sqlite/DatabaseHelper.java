@@ -1,6 +1,5 @@
 package dexter.appsmoniac.debugdb.sqlite;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 import java.util.ArrayList;
@@ -12,18 +11,18 @@ import dexter.appsmoniac.debugdb.model.TableDataResponse;
 import dexter.appsmoniac.debugdb.utils.Constants;
 import dexter.appsmoniac.debugdb.utils.ConverterUtils;
 import dexter.appsmoniac.debugdb.utils.DataType;
-import dexter.appsmoniac.debugdb.utils.TableNameParser;
 
 public class DatabaseHelper {
 
     private DatabaseHelper() {
-        // not publicly instanstiated
+        // not publicly instantiated
     }
 
     public static Response getAllTableName(SQLiteDB database) {
         Response response = new Response();
 
         //  visit :   https://www.sqlite.org/faq.html   for more info about sqlite_master
+        //COLLATE NO CASE :: helps sqlite3 to be case insensitive, while matching string names
         Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table' OR type='view' ORDER BY name COLLATE NOCASE", null);
         if (c.moveToFirst()) {
             while (!c.isAfterLast()) {
@@ -44,20 +43,32 @@ public class DatabaseHelper {
     public static TableDataResponse getTableData(SQLiteDB db, String selectQuery, String tableName) {
 
         TableDataResponse tableData = new TableDataResponse();
-        tableData.isSelectQuery = true;
-        if (tableName == null) {
-            tableName = getTableName(selectQuery);
-        }
 
         final String quotedTableName = getQuotedTableName(tableName);
 
         if (tableName != null) {
+
+            /**
+             * {@PRAGMA_QUERY https://www.safaribooksonline.com/library/view/using-sqlite/9781449394592/re205.html
+             *
+             * This query is useful for getting table info, about rows and columns(data type, etc.)
+             */
+
             final String pragmaQuery = "PRAGMA table_info(" + quotedTableName + ")";
+            //get the table info, like title, etc.
             tableData.tableInfos = getTableInfo(db, pragmaQuery);
         }
         Cursor cursor = null;
         boolean isView = false;
         try {
+            //rawQuery is generally used for SELECT command, and execSql is used for other commnds like CREATE TABLE, etc
+            /**
+             * {@SELECT type FROM sqlite_master WHERE name=?
+             *
+             *  type : 'table' --> also, checks whether table exists or not
+             *
+             *  We can fetch the specific table schema by querying the SQLITE_MASTER table
+             */
             cursor = db.rawQuery("SELECT type FROM sqlite_master WHERE name=?",
                     new String[]{quotedTableName});
             if (cursor.moveToFirst()) {
@@ -71,8 +82,6 @@ public class DatabaseHelper {
             }
         }
 
-        tableData.isEditable = tableName != null && tableData.tableInfos != null && !isView;
-
 
         if (!TextUtils.isEmpty(tableName)) {
             selectQuery = selectQuery.replace(tableName, quotedTableName);
@@ -80,8 +89,7 @@ public class DatabaseHelper {
 
         try {
 
-            //visit: https://stackoverflow.com/questions/10598137/rawqueryquery-selectionargs , to know more about rawqury
-
+            //rawQuery is generally used for SELECT command, and execSql is used for other commnds like CREATE TABLE, etc
             cursor = db.rawQuery(selectQuery, null);
 
         } catch (Exception e) {
@@ -91,17 +99,25 @@ public class DatabaseHelper {
             return tableData;
         }
 
+
+        /**
+         * {@ABOUT_BELOW_METHOD
+         *
+         * The below method, will query over the table, via the cursor, which we got from the rawQuery(selectStatement)
+         * and adding, the column data type and data value
+         *
+         *
+         */
         if (cursor != null) {
             cursor.moveToFirst();
 
             // setting tableInfo when tableName is not known and making
-            // it non-editable also by making isPrimary true for all
+            // it non-editable
             if (tableData.tableInfos == null) {
                 tableData.tableInfos = new ArrayList<>();
                 for (int i = 0; i < cursor.getColumnCount(); i++) {
                     TableDataResponse.TableInfo tableInfo = new TableDataResponse.TableInfo();
                     tableInfo.title = cursor.getColumnName(i);
-                    tableInfo.isPrimary = true;
                     tableData.tableInfos.add(tableInfo);
                 }
             }
@@ -115,6 +131,7 @@ public class DatabaseHelper {
                     for (int i = 0; i < cursor.getColumnCount(); i++) {
                         TableDataResponse.ColumnData columnData = new TableDataResponse.ColumnData();
                         switch (cursor.getType(i)) {
+                            //BLOB. The value is a blob of data, stored exactly as it was input.
                             case Cursor.FIELD_TYPE_BLOB:
                                 columnData.dataType = DataType.TEXT;
                                 columnData.value = ConverterUtils.blobToString(cursor.getBlob(i));
@@ -181,9 +198,6 @@ public class DatabaseHelper {
                         final String columnName = cursor.getColumnName(i);
 
                         switch (columnName) {
-                            case Constants.PK:
-                                tableInfo.isPrimary = cursor.getInt(i) == 1;
-                                break;
                             case Constants.NAME:
                                 tableInfo.title = cursor.getString(i);
                                 break;
@@ -197,43 +211,6 @@ public class DatabaseHelper {
             }
             cursor.close();
             return tableInfoList;
-        }
-        return null;
-    }
-
-
-    public static TableDataResponse exec(SQLiteDB database, String sql) {
-        TableDataResponse tableDataResponse = new TableDataResponse();
-        tableDataResponse.isSelectQuery = false;
-        try {
-
-            String tableName = getTableName(sql);
-
-            if (!TextUtils.isEmpty(tableName)) {
-                String quotedTableName = getQuotedTableName(tableName);
-                sql = sql.replace(tableName, quotedTableName);
-            }
-
-            database.execSQL(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-            tableDataResponse.isSuccessful = false;
-            tableDataResponse.errorMessage = e.getMessage();
-            return tableDataResponse;
-        }
-        tableDataResponse.isSuccessful = true;
-        return tableDataResponse;
-    }
-
-    private static String getTableName(String selectQuery) {
-        // TODO: Handle JOIN Query
-        TableNameParser tableNameParser = new TableNameParser(selectQuery);
-        HashSet<String> tableNames = (HashSet<String>) tableNameParser.tables();
-
-        for (String tableName : tableNames) {
-            if (!TextUtils.isEmpty(tableName)) {
-                return tableName;
-            }
         }
         return null;
     }

@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application>
+
+        //https://developer.android.com/studio/build/manifest-merge
+        //also, helps to merge multiple manifest files
         <provider
             android:authorities="${applicationId}.DebugDBInitProvider"
             android:exported="false"

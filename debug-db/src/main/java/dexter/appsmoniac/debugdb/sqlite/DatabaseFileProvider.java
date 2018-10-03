@@ -12,12 +12,13 @@ public class DatabaseFileProvider {
     private final static String DB_PASSWORD_RESOURCE = "DB_PASSWORD_{0}";
 
     private DatabaseFileProvider() {
-        //not publcly instantiated
+        //not publicly instantiated
     }
 
     public static HashMap<String, Pair<File, String>> getDatabaseFiles(Context context) {
         HashMap<String, Pair<File, String>> databaseFiles = new HashMap<>();
         try {
+
 
             //context.databaseList : Returns an array of strings naming the private databases associated with this Context's application package.
             for (String databaseName : context.databaseList()) {
@@ -43,7 +44,6 @@ public class DatabaseFileProvider {
         if (resourceId != 0) {
             password = context.getString(resourceId);
         }
-
         return password;
     }
 }

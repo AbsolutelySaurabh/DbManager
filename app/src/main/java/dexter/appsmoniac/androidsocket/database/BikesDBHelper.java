@@ -29,12 +29,6 @@ public class BikesDBHelper extends SQLiteOpenHelper {
                 "create table bikes " +
                         "(id integer primary key, name text, color text, mileage real)"
         );
-
-        db.execSQL("create table [transaction] (id integer primary key, name text)");
-
-        for (int i = 0; i < 10; i++) {
-            db.execSQL("insert into [transaction] (name) values ('hello transaction');");
-        }
     }
 
     @Override

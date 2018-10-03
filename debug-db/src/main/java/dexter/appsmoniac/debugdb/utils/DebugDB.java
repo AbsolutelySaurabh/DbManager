@@ -23,7 +23,6 @@ public class DebugDB {
         int portNumber;
 
         try {
-
             portNumber = Integer.valueOf(context.getString(R.string.PORT_NUMBER));
 
         } catch (NumberFormatException ex) {
@@ -34,6 +33,7 @@ public class DebugDB {
 
         clientServer = new ClientServer(context, portNumber);
         clientServer.start();
+        //to show, open this url on browser
         addressLog = NetworkUtils.getAddressLog(context, portNumber);
         Log.d(TAG, addressLog);
     }
@@ -52,6 +52,7 @@ public class DebugDB {
 
     public static void setCustomDatabaseFiles(HashMap<String, Pair<File, String>> customDatabaseFiles) {
         if (clientServer != null) {
+            //this method has been called from Util class of "app" directory, and contains all the databases in hashmap
             clientServer.setCustomDatabaseFiles(customDatabaseFiles);
         }
     }

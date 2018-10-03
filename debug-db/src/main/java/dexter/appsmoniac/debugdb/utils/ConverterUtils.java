@@ -3,6 +3,8 @@ package dexter.appsmoniac.debugdb.utils;
 import java.io.UnsupportedEncodingException;
 public class ConverterUtils {
 
+    //BLOB : Binary Large Object
+    //source : http://qnimate.com/an-introduction-to-javascript-blobs-and-file-interface/
     private static final int MAX_BLOB_LENGTH = 512;
 
     private static final String UNKNOWN_BLOB_LABEL = "{blob}";

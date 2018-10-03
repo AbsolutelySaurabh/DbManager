@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Response {
 
+    //@Expose(serialize = true) can be used to expose thjis value to JSON or not whicle conversion true or false
     public List<Object> rows = new ArrayList<>();
     public List<String> columns = new ArrayList<>();
     public boolean isSuccessful;

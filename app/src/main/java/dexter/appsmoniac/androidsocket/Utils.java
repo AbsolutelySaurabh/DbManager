@@ -19,12 +19,15 @@ public class Utils {
     public static void showDebugDBAddressLogToast(Context context) {
         if (BuildConfig.DEBUG) {
             try {
+                //access that DebugDb class in debugdb module
                 Class<?> debugDB = Class.forName("dexter.appsmoniac.debugdb.utils.DebugDB");
+                //access the getAddressLog, and get the ip address to print/show
                 Method getAddressLog = debugDB.getMethod("getAddressLog");
                 Object value = getAddressLog.invoke(null);
+                // show, this toast to open this url on browser
                 Toast.makeText(context, (String) value, Toast.LENGTH_LONG).show();
-            } catch (Exception ignore) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -40,9 +43,10 @@ public class Utils {
                 customDatabaseFiles.put(ExtTestDBHelper.DATABASE_NAME,
                         new Pair<>(new File(context.getFilesDir() + "/" + ExtTestDBHelper.DIR_NAME +
                                 "/" + ExtTestDBHelper.DATABASE_NAME), ""));
+                //invoke and call this method in DebugDB class
                 setCustomDatabaseFiles.invoke(null, customDatabaseFiles);
-            } catch (Exception ignore) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

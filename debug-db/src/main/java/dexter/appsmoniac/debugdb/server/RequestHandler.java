@@ -1,6 +1,5 @@
 package dexter.appsmoniac.debugdb.server;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
@@ -23,10 +22,8 @@ import dexter.appsmoniac.debugdb.model.TableDataResponse;
 import dexter.appsmoniac.debugdb.sqlite.DatabaseFileProvider;
 import dexter.appsmoniac.debugdb.sqlite.DatabaseHelper;
 import dexter.appsmoniac.debugdb.sqlite.DebugSQLiteDB;
-import dexter.appsmoniac.debugdb.sqlite.InMemoryDebugSQLiteDB;
 import dexter.appsmoniac.debugdb.sqlite.SQLiteDB;
 import dexter.appsmoniac.debugdb.utils.Constants;
-import dexter.appsmoniac.debugdb.utils.PrefHelper;
 import dexter.appsmoniac.debugdb.utils.Utils;
 
 public class RequestHandler {
@@ -39,7 +36,6 @@ public class RequestHandler {
     private HashMap<String, Pair<File, String>> mDatabaseFiles;
     private HashMap<String, Pair<File, String>> mCustomDatabaseFiles;
     private String mSelectedDatabase = null;
-    private HashMap<String, SupportSQLiteDatabase> mRoomInMemoryDatabases = new HashMap<>();
 
     public RequestHandler(Context context) {
         mContext = context;
@@ -65,8 +61,8 @@ public class RequestHandler {
                 }
             }
 
-            Log.e("Line: ", line);
-            Log.e("Route: ", route);
+            Log.d("Line: ", line);
+            Log.d("Route: ", route);
 
             // Output stream that we send the response to
             output = new PrintStream(socket.getOutputStream());
@@ -95,9 +91,7 @@ public class RequestHandler {
 
                 Log.e("getTableList data : ", response);
 
-            }else if (route.startsWith("downloadDb")) {
-                bytes = Utils.getDatabase(mSelectedDatabase, mDatabaseFiles);
-            } else {
+            }else {
 
                 //here we got the bytes[] equivalent of the index.html file.
                 bytes = Utils.loadContent(route, mAssets);
@@ -112,11 +106,6 @@ public class RequestHandler {
             output.println("HTTP/1.0 200 OK");
             output.println("Content-Type: " + Utils.detectMimeType(route));
 
-            if (route.startsWith("downloadDb")) {
-                output.println("Content-Disposition: attachment; filename=" + mSelectedDatabase);
-            } else {
-                output.println("Content-Length: " + bytes.length);
-            }
             output.println();
 
             //refer : https://www.tutorialspoint.com/java/io/printstream_write_byte_len.html
@@ -148,13 +137,10 @@ public class RequestHandler {
 
         TableDataResponse response;
 
-        if (isDbOpened) {
-            String sql = "SELECT * FROM " + tableName;
-            response = DatabaseHelper.getTableData(sqLiteDB, sql, tableName);
-        } else {
-            response = PrefHelper.getAllPrefData(mContext, tableName);
-        }
+        String sql = "SELECT * FROM " + tableName;
+        response = DatabaseHelper.getTableData(sqLiteDB, sql, tableName);
 
+        //source : http://tutorials.jenkov.com/java-json/gson.html
         return mGson.toJson(response);
 
     }
@@ -171,12 +157,7 @@ public class RequestHandler {
                 response.rows.add(dbEntry);
             }
         }
-//        if (mRoomInMemoryDatabases != null) {
-//            for (HashMap.Entry<String, SupportSQLiteDatabase> entry : mRoomInMemoryDatabases.entrySet()) {
-//                String[] dbEntry = {entry.getKey(), "false", "false"};
-//                response.rows.add(dbEntry);
-//            }
-//        }
+
         response.rows.add(new String[]{Constants.APP_SHARED_PREFERENCES, "false", "false"});
         response.isSuccessful = true;
         return mGson.toJson(response);
@@ -201,14 +182,11 @@ public class RequestHandler {
 
     private void openDatabase(String database) {
         closeDatabase();
-        if (mRoomInMemoryDatabases.containsKey(database)) {
-            sqLiteDB = new InMemoryDebugSQLiteDB(mRoomInMemoryDatabases.get(database));
-        } else {
-            File databaseFile = mDatabaseFiles.get(database).first;
-            String password = mDatabaseFiles.get(database).second;
-            SQLiteDatabase.loadLibs(mContext);
-            sqLiteDB = new DebugSQLiteDB(SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), password, null));
-        }
+        File databaseFile = mDatabaseFiles.get(database).first;
+        String password = mDatabaseFiles.get(database).second;
+        SQLiteDatabase.loadLibs(mContext);
+        sqLiteDB = new DebugSQLiteDB(SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), password, null));
+
         isDbOpened = true;
     }
 
