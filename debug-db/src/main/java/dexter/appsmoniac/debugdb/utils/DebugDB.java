@@ -23,7 +23,6 @@ public class DebugDB {
         int portNumber;
 
         try {
-
             portNumber = Integer.valueOf(context.getString(R.string.PORT_NUMBER));
 
         } catch (NumberFormatException ex) {

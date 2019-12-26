@@ -57,7 +57,7 @@ public class RequestHandler {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String line;
             while (!TextUtils.isEmpty(line = reader.readLine())) {
-                if (line.startsWith("GET /")) {
+                if (line.startsWith(Constants.GET_ROUTE)) {
                     int start = line.indexOf('/') + 1;
                     int end = line.indexOf(' ', start);
                     route = line.substring(start, end);
@@ -72,33 +72,32 @@ public class RequestHandler {
             output = new PrintStream(socket.getOutputStream());
 
             if (route == null || route.isEmpty()) {
-                route = "index.html";
+                route = Constants.INDEX_HTML_FILE;
             }
 
             byte[] bytes;
 
-            if (route.startsWith("getDbList")) {
+            if (route.startsWith(Constants.GET_DB_LIST)) {
                 final String response = getDBListResponse();
 
                 //need to get in byte[] as it's needed to write in socket outputstream.
                 bytes = response.getBytes();
-            } else if (route.startsWith("getAllDataFromTheTable")) {
+            } else if (route.startsWith(Constants.GET_ALL_DATA_FROM_TABLE)) {
 
                 final String response = getAllDataFromTheTableResponse(route);
                 bytes = response.getBytes();
-                Log.e("getAllFromTheTable: ", response);
+                Log.e(Constants.GET_ALL_DATA_FROM_TABLE + " data: ", response);
 
-            } else if (route.startsWith("getTableList")) {
+            } else if (route.startsWith(Constants.GET_TABLE_LIST)) {
 
                 final String response = getTableListResponse(route);
                 bytes = response.getBytes();
 
-                Log.e("getTableList data : ", response);
+                Log.e(Constants.GET_TABLE_LIST + " data: ", response);
 
-            }else if (route.startsWith("downloadDb")) {
+            }else if (route.startsWith(Constants.DOWNLOAD_DB)) {
                 bytes = Utils.getDatabase(mSelectedDatabase, mDatabaseFiles);
             } else {
-
                 //here we got the bytes[] equivalent of the index.html file.
                 bytes = Utils.loadContent(route, mAssets);
             }
@@ -112,7 +111,7 @@ public class RequestHandler {
             output.println("HTTP/1.0 200 OK");
             output.println("Content-Type: " + Utils.detectMimeType(route));
 
-            if (route.startsWith("downloadDb")) {
+            if (route.startsWith(Constants.DOWNLOAD_DB)) {
                 output.println("Content-Disposition: attachment; filename=" + mSelectedDatabase);
             } else {
                 output.println("Content-Length: " + bytes.length);

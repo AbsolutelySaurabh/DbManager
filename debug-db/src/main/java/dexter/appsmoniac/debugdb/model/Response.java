@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Response {
-
     public List<Object> rows = new ArrayList<>();
     public List<String> columns = new ArrayList<>();
     public boolean isSuccessful;
@@ -14,5 +13,4 @@ public class Response {
     public Response() {
 
     }
-
 }

@@ -1,6 +1,4 @@
 package dexter.appsmoniac.androidsocket;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,7 +16,6 @@ import dexter.appsmoniac.androidsocket.database.PersonDBHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -36,16 +33,16 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefsOne = getSharedPreferences("prefOne", Context.MODE_PRIVATE);
         SharedPreferences prefsTwo = getSharedPreferences("prefTwo", Context.MODE_PRIVATE);
 
-        sharedPreferences.edit().putString("testOne", "one").commit();
-        sharedPreferences.edit().putInt("testTwo", 5).commit();
-        sharedPreferences.edit().putLong("testThree", 10000L).commit();
-        sharedPreferences.edit().putFloat("testFour", 4.21F).commit();
-        sharedPreferences.edit().putBoolean("testFive", true).commit();
-        sharedPreferences.edit().putStringSet("testSix", stringSet).commit();
+        sharedPreferences.edit().putString("testOne", "one").apply();
+        sharedPreferences.edit().putInt("testTwo", 5).apply();
+        sharedPreferences.edit().putLong("testThree", 10000L).apply();
+        sharedPreferences.edit().putFloat("testFour", 4.21F).apply();
+        sharedPreferences.edit().putBoolean("testFive", true).apply();
+        sharedPreferences.edit().putStringSet("testSix", stringSet).apply();
 
-        prefsOne.edit().putString("testOne", "one").commit();
+        prefsOne.edit().putString("testOne", "one").apply();
 
-        prefsTwo.edit().putString("testTwo", "two").commit();
+        prefsTwo.edit().putString("testTwo", "two").apply();
 
         ContactDBHelper contactDBHelper = new ContactDBHelper(getApplicationContext());
         if (contactDBHelper.count() == 0) {

@@ -31,5 +31,4 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     debugCompile project(':debug-db')
-
 }
